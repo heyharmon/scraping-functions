@@ -1,21 +1,18 @@
-const functions = require("firebase-functions");
-const cors = require('cors')
+const functions = require('firebase-functions');
 const express = require('express')
-const routes = require('./routes/index.js');
+const cors = require('cors')
 
+// Import routes
+const routes = require('./routes.js');
+
+// Setup Express app
 const app = express()
       app.use(cors({origin: true}))
       app.use('/', routes);
-//
-// const app = express()
-//       app.use(cors({origin: true}))
-//
-// app.get('/scrape', (req, res) => {
-//     scraper(res)
-// })
-//
+
+// Return Express app from Firebase Function on "/api"
 exports.api = functions
-    // .runWith({memory: '1GB'})
+    // .runWith({memory: '1GB'}) // Use when we start running Puppeteer
     .https.onRequest((request, response) => {
         return app(request, response)
     })

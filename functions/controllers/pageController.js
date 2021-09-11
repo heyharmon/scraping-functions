@@ -1,39 +1,47 @@
 const cheerio = require('cheerio')
-const got = require('got')
+const axios = require('axios')
+
+const { getWordCount } = require("../helpers");
 
 const getPage = async (req, res) => {
-    // const url = req.query.url
-    const url = 'https://bloomcu.com'
+    const url = req.query.url
 
     if (url) {
-        got(url).then(response => {
-            const $ = cheerio.load(response.body)
+
+        axios.get(url)
+        .then((html) => {
+            const $ = cheerio.load(html.data);
 
             const title = $('title').first().text()
-
-            const body = $('body').text().trim().replace(/(\r\n|\n|\r)/gm, '')
-
-            const words = body.split(' ').length
+            const body = $('body').text().replace(/\s+/g, ' ')
+            const words = getWordCount(body)
 
             const links = $('a').map(function() {
                 return {
-                    text: $(this).text(),
+                    text: $(this).text().replace(/\s+/g, ' '),
                     url: $(this).attr('href')
                 }
             }).get()
 
             res.status(200).json({
+                status: 200,
                 title: title,
                 words: words,
                 links: links
             })
-        }).catch(error => {
-            console.log(error)
-        });
+        })
+        .catch(error => {
+            if (error.response.status == 404) {
+                res.status(404).json({
+                    status: 404,
+                    message: 'Url cannot be loaded'
+                })
+            }
+        })
 
     } else {
         res.status(400).json({
-            message: 'Missing URL'
+            message: 'Missing url parameter.'
         })
     }
 };

@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
 
-// Controllers
-const pageController = require('../controllers/pageController');
+// Import controllers
+const pageController = require('./controllers/pageController');
 
-// Routes
+// Add routes to router
 router.get('/page', pageController.getPage);
 
 module.exports = router
