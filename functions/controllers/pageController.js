@@ -1,11 +1,10 @@
-const cheerio = require('cheerio')
-const axios = require('axios')
+const cheerio = require('cheerio'),
+      axios = require('axios')
 
-const { getWordCount } = require("../helpers");
+const { getWordCount } = require("../util/helpers");
 
-const getPage = async (req, res) => {
+const get = async (req, res) => {
     const url = req.query.url
-
     if (url) {
 
         axios.get(url)
@@ -47,5 +46,5 @@ const getPage = async (req, res) => {
 };
 
 module.exports = {
-  getPage
+  get
 };

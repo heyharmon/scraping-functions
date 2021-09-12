@@ -12,7 +12,7 @@ const app = express()
 
 // Return Express app from Firebase Function on "/api"
 exports.api = functions
-    // .runWith({memory: '1GB'}) // Use when we start running Puppeteer
+    .runWith({memory: '1GB'}) // Use when we start running Puppeteer
     .https.onRequest((request, response) => {
         return app(request, response)
     })
