@@ -1,8 +1,12 @@
 const cheerio = require('cheerio'),
-      axios = require('axios'),
-      Url = require('url-parse');
+      axios = require('axios')
 
-const { getWordCount, cleanHtml } = require("../util/helpers");
+const {
+    getTitle,
+    getLinkFromAnchor,
+    getCleanBody,
+    getWordCount
+} = require("../util/helpers")
 
 const get = async (req, res) => {
     const startUrl = req.query.url
@@ -14,46 +18,15 @@ const get = async (req, res) => {
             const $ = cheerio.load(html.data);
 
             // Get page title
-            const title = $('title')
-                .first() // Get first instance
-                .text() // Get text
-                .replace(/\s+/g, ' ').trim() // Remove line breaks then trim outer spaces
+            const title = getTitle($)
 
-            /**
-             * Get links
-             * --------
-             */
             // Get all links
             const links = $('a').map(function() {
-                // Parse url
-                const url = new Url($(this).attr('href'), startUrl)
-
-                // Ignore links without an origin
-                // This rules out links containing javascript, tel, mail, etc
-                if (url.origin !== 'null') {
-                    const text = $(this)
-                        .children().remove().end() // Select and remove any html in link
-                        .text() // Get text
-                        .replace(/\s+/g, ' ').trim() // Remove line breaks then trim outer spaces
-
-                    return {
-                        text: text,
-                        url: url.origin + url.pathname // Eliminate hashes and params
-                    }
-                }
+                return getLinkFromAnchor($(this), startUrl)
             }).get()
 
-            /**
-             * Get cleaned body
-             * --------
-             */
-            // Remove header, navigation and footer
-            $('header, nav, footer').remove()
-
             // Get body
-            const body = $('body')
-                .text() // Get text
-                .replace(/\s+/g, ' ') // Remove line breaks
+            const body = getCleanBody($)
 
             // Get word count
             const words = getWordCount(body)
@@ -62,6 +35,7 @@ const get = async (req, res) => {
                 status: 200,
                 title: title,
                 words: words,
+                body: body,
                 links: links
             })
         })

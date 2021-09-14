@@ -1,19 +1,50 @@
-// Extract word count from a string
-const getWordCount = (string) => {
-    // Match on any sequence of non-whitespace characters
-    return string.match(/\S+/g).length
+const cheerio = require('cheerio'),
+      Url = require('url-parse')
+
+// Extract title from Cheerio instance
+const getTitle = ($) => {
+    return $('title')
+        .first() // Get first instance
+        .text() // Get text
+        .replace(/\s+/g, ' ').trim() // Remove line breaks then trim outer spaces
 }
 
-// Remove all unwanted html tags from a string
-const cleanHtml = (string) => {
-    string = removeLineBreaks(string)
-    string = removeScripts(string)
-    string = removeStyles(string)
-    string = removeAnchors(string)
-    string = removeIFrames(string)
-    string = removeUrls(string)
+// Extract link text and url from anchhor
+const getLinkFromAnchor = (anchor, baseUrl) => {
+    // Parse url
+    const url = new Url(anchor.attr('href'), baseUrl)
 
-    return string
+    // Ignore links without an origin
+    // This rules out links containing javascript, tel, mail, etc
+    if (url.origin !== 'null') {
+        const text = anchor
+            .children().remove().end() // Select and remove any html in link
+            .text() // Get text
+            .replace(/\s+/g, ' ').trim() // Remove line breaks then trim outer spaces
+
+        return {
+            text: text,
+            url: url.origin + url.pathname // Eliminate hashes and params
+        }
+    }
+}
+
+
+
+// Remove all unwanted html tags from a string
+const getCleanBody = ($) => {
+    // Remove header, navigation and footer
+    $('header, nav, footer').remove()
+
+    clean = $('body').text()
+    clean = removeLineBreaks(clean)
+    clean = removeScripts(clean)
+    clean = removeStyles(clean)
+    clean = removeAnchors(clean)
+    clean = removeIFrames(clean)
+    clean = removeUrls(clean)
+
+    return clean
 }
 
 const removeLineBreaks = (string) => {
@@ -45,7 +76,16 @@ const removeUrls = (string) => {
     return string.replace(/(?:https?|www):\/\/[\n\S]+/g, '')
 }
 
+// Extract word count from a string
+const getWordCount = (string) => {
+
+    // Match on any sequence of non-whitespace characters
+    return string.match(/\S+/g).length
+}
+
 module.exports = {
-    getWordCount,
-    cleanHtml
+    getTitle,
+    getLinkFromAnchor,
+    getCleanBody,
+    getWordCount
 }
