@@ -1,6 +1,7 @@
 const puppeteer = require('puppeteer'),
       scrollPageToBottom = require('puppeteer-autoscroll-down')
-      _ = require('lodash/core')
+
+const { puppeteerBrowserConfig } = require('../util/configs.js')
 
 const get = async (req, res) => {
     const url = req.query.url
@@ -8,14 +9,11 @@ const get = async (req, res) => {
 
         try {
             // Setup browser
-            const browser = await puppeteer.launch({
-                headless: true,
-                ignoreHTTPSErrors: true,
-            })
+            const browser = await puppeteer.launch(puppeteerBrowserConfig)
 
             // Load page
             const page = await browser.newPage()
-            await page.goto(url, {waitUntil: 'load'})
+            await page.goto(url, { waitUntil: 'load' })
 
             // Set the viewport
             await page.setViewport({ width:1680, height:1050 });
@@ -32,7 +30,7 @@ const get = async (req, res) => {
             const screenshot = await page.screenshot({
                 fullPage: true,
                 type: 'jpeg',
-                quality: 90
+                quality: 85
             })
 
             // Close the browser

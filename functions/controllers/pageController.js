@@ -1,26 +1,62 @@
 const cheerio = require('cheerio'),
-      axios = require('axios')
+      axios = require('axios'),
+      Url = require('url-parse');
 
-const { getWordCount } = require("../util/helpers");
+const { getWordCount, cleanHtml } = require("../util/helpers");
 
 const get = async (req, res) => {
-    const url = req.query.url
-    if (url) {
+    const startUrl = req.query.url
 
-        axios.get(url)
+    if (startUrl) {
+
+        axios.get(startUrl)
         .then((html) => {
             const $ = cheerio.load(html.data);
 
-            const title = $('title').first().text()
-            const body = $('body').text().replace(/\s+/g, ' ')
-            const words = getWordCount(body)
+            // Get page title
+            const title = $('title')
+                .first() // Get first instance
+                .text() // Get text
+                .replace(/\s+/g, ' ').trim() // Remove line breaks then trim outer spaces
 
+            /**
+             * Get links
+             * --------
+             */
+            // Get all links
             const links = $('a').map(function() {
-                return {
-                    text: $(this).text().replace(/\s+/g, ' '),
-                    url: $(this).attr('href')
+                // Parse url
+                const url = new Url($(this).attr('href'), startUrl)
+
+                // Ignore links without an origin
+                // This rules out links containing javascript, tel, mail, etc
+                if (url.origin !== 'null') {
+                    const text = $(this)
+                        .children().remove().end() // Select and remove any html in link
+                        .text() // Get text
+                        .replace(/\s+/g, ' ').trim() // Remove line breaks then trim outer spaces
+
+                    return {
+                        text: text,
+                        url: url.origin + url.pathname // Eliminate hashes and params
+                    }
                 }
             }).get()
+
+            /**
+             * Get cleaned body
+             * --------
+             */
+            // Remove header, navigation and footer
+            $('header, nav, footer').remove()
+
+            // Get body
+            const body = $('body')
+                .text() // Get text
+                .replace(/\s+/g, ' ') // Remove line breaks
+
+            // Get word count
+            const words = getWordCount(body)
 
             res.status(200).json({
                 status: 200,
@@ -30,12 +66,10 @@ const get = async (req, res) => {
             })
         })
         .catch(error => {
-            if (error.response.status == 404) {
-                res.status(404).json({
-                    status: 404,
-                    message: 'Url cannot be loaded'
-                })
-            }
+            res.status(500).json({
+                status: 500,
+                message: 'Internal server error'
+            })
         })
 
     } else {
