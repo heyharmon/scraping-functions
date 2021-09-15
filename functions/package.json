@@ -21,7 +21,8 @@
     "firebase-functions": "^3.14.1",
     "lodash": "^4.17.21",
     "puppeteer": "^10.2.0",
-    "puppeteer-autoscroll-down": "^0.1.7"
+    "puppeteer-autoscroll-down": "^0.1.7",
+    "url-parse": "^1.5.3"
   },
   "devDependencies": {
     "firebase-functions-test": "^0.2.0"
