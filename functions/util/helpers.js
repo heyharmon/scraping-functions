@@ -1,7 +1,21 @@
 const cheerio = require('cheerio'),
+      axios = require('axios'),
       Url = require('url-parse')
 
-// Extract title from Cheerio instance
+const fetchHtml = async (url) => {
+    let response = await axios(url).catch((error) => {
+        return error;
+    });
+
+    if (response.status !== 200) {
+        console.log("Error occurred while fetching data");
+        return response;
+    }
+
+    return response;
+}
+
+// Extract title from html
 const getTitle = ($) => {
     return $('title')
         .first() // Get first instance
@@ -9,44 +23,54 @@ const getTitle = ($) => {
         .replace(/\s+/g, ' ').trim() // Remove line breaks then trim outer spaces
 }
 
-// Extract link text and url from anchhor
-const getLinkFromAnchor = (anchor, baseUrl) => {
-    // Parse url
-    const url = new Url(anchor.attr('href'), baseUrl)
+// Extract all links from html
+const getLinks = ($, baseUrl) => {
+    return $('a').map(function() {
+        // New parsed url. Use base url on relative links
+        const url = new Url($(this).attr('href'), baseUrl)
 
-    // Ignore links without an origin
-    // This rules out links containing javascript, tel, mail, etc
-    if (url.origin !== 'null') {
-        const text = anchor
-            .children().remove().end() // Select and remove any html in link
-            .text() // Get text
-            .replace(/\s+/g, ' ').trim() // Remove line breaks then trim outer spaces
+        const text = getCleanLinkText($(this))
 
-        return {
-            text: text,
-            url: url.origin + url.pathname // Eliminate hashes and params
+        if (url.protocol == 'https:' || url.protocol == 'http:' ) {
+            return {
+                text: text,
+                url: url.origin + url.pathname
+            }
         }
-    }
+
+        if (url.protocol == 'tel:' || url.protocol == 'mailto:' ) {
+            return {
+                text: text,
+                url: url.protocol + url.pathname
+            }
+        }
+    }).get()
 }
 
+// Remove html from link inner text
+const getCleanLinkText = ($) => {
+    return $
+        .children().remove().end() // Select and remove any html in link
+        .text() // Get text
+        .replace(/\s+/g, ' ').trim() // Remove line breaks then trim outer spaces
+}
 
-
-// Remove all unwanted html tags from a string
+// Remove all unwanted html from html body
 const getCleanBody = ($) => {
-    // Remove header, navigation and footer
-    $('header, nav, footer').remove()
+    $('title, header, nav, footer').remove()
 
-    clean = $('body').text()
-    clean = removeLineBreaks(clean)
-    clean = removeScripts(clean)
-    clean = removeStyles(clean)
-    clean = removeAnchors(clean)
-    clean = removeIFrames(clean)
-    clean = removeUrls(clean)
+    body = $('body').text()
+    body = removeLineBreaks(body)
+    body = removeScripts(body)
+    body = removeStyles(body)
+    body = removeAnchors(body)
+    body = removeIFrames(body)
+    body = removeUrls(body)
 
-    return clean
+    return body
 }
 
+// Remove all line breaks from a string
 const removeLineBreaks = (string) => {
     return string.replace(/\s+/g, ' ')
 }
@@ -78,14 +102,14 @@ const removeUrls = (string) => {
 
 // Extract word count from a string
 const getWordCount = (string) => {
-
     // Match on any sequence of non-whitespace characters
     return string.match(/\S+/g).length
 }
 
 module.exports = {
+    fetchHtml,
     getTitle,
-    getLinkFromAnchor,
+    getLinks,
     getCleanBody,
     getWordCount
 }
