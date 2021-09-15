@@ -1,5 +1,3 @@
-const cheerio = require('cheerio')
-const axios = require('axios')
 const Url = require('url-parse')
 
 // Extract title from html
@@ -36,8 +34,7 @@ const getLinks = ($, baseUrl) => {
 
 // Remove html from link inner text
 const getCleanLinkText = ($) => {
-    return $
-        .children().remove().end() // Select and remove any html in link
+    return $.children().remove().end() // Select and remove any html in link
         .text() // Get text
         .replace(/\s+/g, ' ').trim() // Remove line breaks then trim outer spaces
 }
@@ -46,7 +43,7 @@ const getCleanLinkText = ($) => {
 const getCleanBody = ($) => {
     $('title, header, nav, footer').remove()
 
-    body = $('body').text()
+    let body = $('body').text()
     body = removeLineBreaks(body)
     body = removeScripts(body)
     body = removeStyles(body)

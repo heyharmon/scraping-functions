@@ -2,7 +2,6 @@ const cheerio = require('cheerio')
 const axios = require('axios')
 
 const {
-    fetchHtml,
     getTitle,
     getLinks,
     getCleanBody,
@@ -40,12 +39,13 @@ const get = async (req, res) => {
             })
 
         // Page could not load
-        }).catch(error => {
-            res.status(404).json({
-                status: 404,
-                message: 'Page not found'
-            })
         })
+        // .catch(() => {
+        //     res.status(404).json({
+        //         status: 404,
+        //         message: 'Page not found'
+        //     })
+        // })
 
     } else {
         res.status(400).json({
