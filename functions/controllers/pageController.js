@@ -1,5 +1,5 @@
-const cheerio = require('cheerio'),
-      axios = require('axios')
+const cheerio = require('cheerio')
+const axios = require('axios')
 
 const {
     fetchHtml,
@@ -13,40 +13,38 @@ const get = async (req, res) => {
     const startUrl = req.query.url
     if (startUrl) {
 
-        let html = await axios.get(startUrl).catch((error) => {
-            if (!error.response) {
-                res.status(500).json({
-                    status: 500,
-                    message: 'There is a problem with that url'
-                })
-            } else {
-                res.status(404).json({
-                    status: 404,
-                    message: 'Page not found'
-                })
-            }
-        })
+        axios.get(startUrl).then((html) => {
 
-        const $ = cheerio.load(html.data);
+            // Setup Cheerio
+            const $ = cheerio.load(html.data);
 
-        // Get page title
-        const title = getTitle($)
+            // Get page title
+            const title = getTitle($)
 
-        // Get all links
-        const links = getLinks($, startUrl)
+            // Get all links
+            const links = getLinks($, startUrl)
 
-        // Get body
-        const body = getCleanBody($)
+            // Get body
+            const body = getCleanBody($)
 
-        // Get word count
-        const words = getWordCount(body)
+            // Get word count
+            const words = getWordCount(body)
 
-        res.status(200).json({
-            status: 200,
-            title: title,
-            words: words,
-            body: body,
-            links: links
+            // Return page
+            res.status(200).json({
+                status: 200,
+                title: title,
+                words: words,
+                body: body,
+                links: links
+            })
+
+        // Page could not load
+        }).catch(error => {
+            res.status(404).json({
+                status: 404,
+                message: 'Page not found'
+            })
         })
 
     } else {

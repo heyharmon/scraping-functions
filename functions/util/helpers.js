@@ -1,19 +1,6 @@
-const cheerio = require('cheerio'),
-      axios = require('axios'),
-      Url = require('url-parse')
-
-const fetchHtml = async (url) => {
-    let response = await axios(url).catch((error) => {
-        return error;
-    });
-
-    if (response.status !== 200) {
-        console.log("Error occurred while fetching data");
-        return response;
-    }
-
-    return response;
-}
+const cheerio = require('cheerio')
+const axios = require('axios')
+const Url = require('url-parse')
 
 // Extract title from html
 const getTitle = ($) => {
@@ -107,7 +94,6 @@ const getWordCount = (string) => {
 }
 
 module.exports = {
-    fetchHtml,
     getTitle,
     getLinks,
     getCleanBody,

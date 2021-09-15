@@ -1,14 +1,14 @@
-const functions = require('firebase-functions');
+const functions = require('firebase-functions')
 const express = require('express')
 const cors = require('cors')
 
 // Import routes
-const routes = require('./routes.js');
+const routes = require('./routes.js')
 
 // Setup Express app
 const app = express()
       app.use(cors({origin: true}))
-      app.use('/', routes);
+      app.use('/', routes)
 
 // Return Express app from Firebase Function on "/api"
 exports.api = functions
