@@ -9,28 +9,9 @@ const getTitle = ($) => {
 }
 
 // Extract all links from html
-const getLinks = ($, baseUrl) => {
+const getAllLinks = ($, baseUrl) => {
     return $('a').map(function() {
-        // New parsed url. Use base url on relative links
-        const url = new Url($(this).attr('href'), baseUrl)
-
-        const text = getCleanLinkText($(this))
-
-        if (url.protocol == 'https:' || url.protocol == 'http:' ) {
-            return {
-                text: text,
-                url: url.origin + url.pathname + url.query,
-                hostname: url.hostname
-            }
-        }
-
-        if (url.protocol == 'tel:' || url.protocol == 'mailto:' ) {
-            return {
-                text: text,
-                url: url.protocol + url.pathname,
-                hostname: url.hostname
-            }
-        }
+        return getCleanLink($(this), baseUrl)
     }).get()
 }
 
@@ -39,6 +20,40 @@ const getCleanLinkText = ($) => {
     return $.children().remove().end() // Select and remove any html in link
         .text() // Get text
         .replace(/\s+/g, ' ').trim() // Remove line breaks then trim outer spaces
+}
+
+const getCleanLink = ($link, baseUrl) => {
+    // New parsed url. Use base url on relative links
+    const url = new Url($link.attr('href'), baseUrl)
+
+    const text = getCleanLinkText($link)
+
+    if (url.protocol == 'https:' || url.protocol == 'http:' ) {
+        return {
+            type: 'link',
+            text: text,
+            url: url.origin + url.pathname + url.query,
+            hostname: url.hostname
+        }
+    }
+
+    if (url.protocol == 'tel:') {
+        return {
+            type: 'phone',
+            text: text,
+            url: url.protocol + url.pathname,
+            hostname: url.hostname
+        }
+    }
+
+    if (url.protocol == 'mailto:' ) {
+        return {
+            type: 'email',
+            text: text,
+            url: url.protocol + url.pathname,
+            hostname: url.hostname
+        }
+    }
 }
 
 // Remove all unwanted html from html body
@@ -94,7 +109,7 @@ const getWordCount = (string) => {
 
 module.exports = {
     getTitle,
-    getLinks,
+    getAllLinks,
     getCleanBody,
     getWordCount
 }

@@ -3,7 +3,7 @@ const axios = require('axios')
 
 const {
     getTitle,
-    getLinks,
+    getAllLinks,
     getCleanBody,
     getWordCount
 } = require("../util/helpers")
@@ -15,16 +15,16 @@ const get = async (req, res) => {
         axios.get(startUrl).then((html) => {
 
             // Setup Cheerio
-            const $ = cheerio.load(html.data);
+            const $html = cheerio.load(html.data);
 
             // Get page title
-            const title = getTitle($)
+            const title = getTitle($html)
 
             // Get all links
-            const links = getLinks($, startUrl)
+            const links = getAllLinks($html, startUrl)
 
             // Get body
-            const body = getCleanBody($)
+            const body = getCleanBody($html)
 
             // Get word count
             const words = getWordCount(body)
