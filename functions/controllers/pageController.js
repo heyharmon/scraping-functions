@@ -38,14 +38,14 @@ const get = async (req, res) => {
                 links: links
             })
 
-        // Page could not load
+    // Page could not load
+    }).catch((error) => {
+        console.log(error)
+        res.status(500).json({
+            status: 500,
+            message: error.message
         })
-        // .catch(() => {
-        //     res.status(404).json({
-        //         status: 404,
-        //         message: 'Page not found'
-        //     })
-        // })
+    })
 
     } else {
         res.status(400).json({

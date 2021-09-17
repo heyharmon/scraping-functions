@@ -19,14 +19,16 @@ const getLinks = ($, baseUrl) => {
         if (url.protocol == 'https:' || url.protocol == 'http:' ) {
             return {
                 text: text,
-                url: url.origin + url.pathname
+                url: url.origin + url.pathname + url.query,
+                hostname: url.hostname
             }
         }
 
         if (url.protocol == 'tel:' || url.protocol == 'mailto:' ) {
             return {
                 text: text,
-                url: url.protocol + url.pathname
+                url: url.protocol + url.pathname,
+                hostname: url.hostname
             }
         }
     }).get()
