@@ -1,10 +1,10 @@
 const cheerio = require('cheerio')
 const axios = require('axios')
 
-const { getTitle } = require("../util/title")
-const { getLinks } = require("../util/links")
-const { getBody } = require("../util/body")
-const { getWordCount } = require("../util/stringHelpers")
+const { getTitle } = require("../helpers/title")
+const { getLinks } = require("../helpers/links")
+const { getBody } = require("../helpers/body")
+const { getWordCount } = require("../helpers/count")
 
 const get = async (req, res) => {
     const startUrl = req.query.url

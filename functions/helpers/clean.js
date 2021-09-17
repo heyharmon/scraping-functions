@@ -1,4 +1,21 @@
 /**
+ * Remove all unwanted markup from string
+ *
+ * @param  {String} string
+ * @return {String} Returns clean string
+ */
+const clean = (string) => {
+    string = removeLineBreaks(string)
+    string = removeScripts(string)
+    string = removeStyles(string)
+    string = removeAnchors(string)
+    string = removeIFrames(string)
+    string = removeUrls(string)
+
+    return string
+}
+
+/**
  * Remove all line breaks from a string
  *
  * @param  {String} string
@@ -58,23 +75,12 @@ const removeUrls = (string) => {
     return string.replace(/(?:https?|www):\/\/[\n\S]+/g, '')
 }
 
-/**
- * Extract word count from a string
- *
- * @param  {String} string
- * @return {Number} Returns word count as number
- */
-const getWordCount = (string) => {
-    // Match on any sequence of non-whitespace characters
-    return string.match(/\S+/g).length
-}
-
 module.exports = {
+    clean,
     removeLineBreaks,
     removeScripts,
     removeStyles,
     removeAnchors,
     removeIFrames,
-    removeUrls,
-    getWordCount
+    removeUrls
 }

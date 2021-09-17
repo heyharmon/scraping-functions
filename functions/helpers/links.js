@@ -14,7 +14,7 @@ const getLinks = ($html, baseUrl) => {
 }
 
 /**
- * Structure link object with properties we want
+ * Constrcut a link object with properties we want
  *
  * @param  {Function} $link Link html as Cheerio function
  * @param  {String} baseUrl Url used to make relative links absolute
@@ -39,7 +39,8 @@ const getStructuredLink = ($link, baseUrl) => {
  * @return {String} Returns clean link text as string
  */
 const getLinkText = ($link) => {
-    return $link.children().remove().end() // Select and remove any html in link
+    return $link
+        .children().remove().end() // Select and remove any html in link
         .text() // Get text
         .replace(/\s+/g, ' ') // Remove line breaks
         .trim() // Trim outer spaces
@@ -52,12 +53,15 @@ const getLinkText = ($link) => {
  * @return {String} Returns type of link as string
  */
 const getLinkType = (url) => {
+    // Detect Links
     if (url.protocol == 'https:' || url.protocol == 'http:' ) {
 
+        // Detect links to documents
         if (isDocument(url.pathname)) {
             return 'document'
         }
 
+        // Detect links to social platforms
         if (isSocial(url.host)) {
             return 'social'
         }
@@ -65,10 +69,12 @@ const getLinkType = (url) => {
         return 'link'
     }
 
+    // Detect telephone links
     if (url.protocol == 'tel:') {
         return 'phone'
     }
 
+    // Detect email links
     if (url.protocol == 'mailto:' ) {
         return 'email'
     }
@@ -81,14 +87,17 @@ const getLinkType = (url) => {
  * @return {String} Returns url as string
  */
 const getLinkUrl = (url) => {
+    // Construct urls without hashes
     if (url.protocol == 'https:' || url.protocol == 'http:' ) {
         return url.origin + url.pathname + url.query
     }
 
+    // Construct telephone urls
     if (url.protocol == 'tel:') {
         return 'tel:' + url.pathname
     }
 
+    // Construct email urls
     if (url.protocol == 'mailto:' ) {
         return 'mailto:' + url.pathname
     }
