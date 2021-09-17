@@ -1,12 +1,10 @@
 const cheerio = require('cheerio')
 const axios = require('axios')
 
-const {
-    getTitle,
-    getAllLinks,
-    getCleanBody,
-    getWordCount
-} = require("../util/helpers")
+const { getTitle } = require("../util/title")
+const { getLinks } = require("../util/links")
+const { getBody } = require("../util/body")
+const { getWordCount } = require("../util/stringHelpers")
 
 const get = async (req, res) => {
     const startUrl = req.query.url
@@ -21,10 +19,10 @@ const get = async (req, res) => {
             const title = getTitle($html)
 
             // Get all links
-            const links = getAllLinks($html, startUrl)
+            const links = getLinks($html, startUrl)
 
             // Get body
-            const body = getCleanBody($html)
+            const body = getBody($html)
 
             // Get word count
             const words = getWordCount(body)
@@ -40,7 +38,6 @@ const get = async (req, res) => {
 
     // Page could not load
     }).catch((error) => {
-        console.log(error)
         res.status(500).json({
             status: 500,
             message: error.message

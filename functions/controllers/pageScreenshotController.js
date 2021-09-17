@@ -1,7 +1,7 @@
 const puppeteer = require('puppeteer'),
       scrollPageToBottom = require('puppeteer-autoscroll-down')
 
-const { puppeteerBrowserConfig } = require('../util/configs.js')
+const { puppeteerConfig } = require('../config/puppeteer.js')
 
 const get = async (req, res) => {
     const url = req.query.url
@@ -9,7 +9,7 @@ const get = async (req, res) => {
 
         try {
             // Setup browser
-            const browser = await puppeteer.launch(puppeteerBrowserConfig)
+            const browser = await puppeteer.launch(puppeteerConfig)
 
             // Load page
             const page = await browser.newPage()

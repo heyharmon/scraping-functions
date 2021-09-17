@@ -1,5 +1,5 @@
 // Default config for Puppeteer browser
-const puppeteerBrowserConfig =  {
+const puppeteerConfig =  {
     headless: true,
     ignoreHTTPSErrors: true,
     args: [
@@ -42,5 +42,5 @@ const puppeteerBrowserConfig =  {
 }
 
 module.exports = {
-    puppeteerBrowserConfig
+    puppeteerConfig
 }
