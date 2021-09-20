@@ -10,13 +10,6 @@ const get = async (req, res) => {
     if (url) {
         const html = await getHtml(url, res)
 
-        // res.status(200).json({
-        //     status: 200,
-        //     data: page
-        // })
-
-        // const $html = cheerio.load(html)
-
         const title = getTitle(html)
         const body = getBodyText(html)
         const words = getWordCount(body)

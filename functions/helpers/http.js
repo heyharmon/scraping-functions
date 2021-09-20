@@ -16,7 +16,8 @@ const getHtml = async (url, res) => {
                 return cheerio.load(html.data)
             })
     } catch {
-        return axios.get('https://scrappy.bloomcu.com/')
+        // Use Scraper API
+        return axios.get('http://api.scraperapi.com/?api_key=fedd4443a9adb164a0b7110b0aed4923&url=' + url, { timeout: 30000 })
             .then((html) => {
                 return cheerio.load(html.data)
             })
