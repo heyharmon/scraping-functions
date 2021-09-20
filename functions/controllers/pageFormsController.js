@@ -12,10 +12,13 @@ const get = async (req, res) => {
             // Setup Cheerio
             const $html = cheerio.load(html.data);
 
+            // Get forms
+            const forms = getForms($html)
+
             // Return forms
             res.status(200).json({
                 status: 200,
-                forms: getForms($html)
+                forms: forms
             })
 
     // Page could not load

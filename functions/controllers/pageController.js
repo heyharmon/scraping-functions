@@ -1,10 +1,7 @@
 const cheerio = require('cheerio')
 const axios = require('axios')
-const got = require('got');
 
 const { getTitle } = require("../helpers/title")
-const { getLinks } = require("../helpers/links")
-const { getTables } = require("../helpers/tables")
 const { getBodyText } = require("../helpers/body")
 const { getWordCount } = require("../helpers/count")
 
@@ -20,12 +17,6 @@ const get = async (req, res) => {
             // Get page title
             const title = getTitle($html)
 
-            // Get all links
-            const links = getLinks($html, url)
-
-            // Get all tables
-            const tables = getTables($html)
-
             // Get body
             const body = getBodyText($html)
 
@@ -38,8 +29,6 @@ const get = async (req, res) => {
                 title: title,
                 words: words,
                 body: body,
-                links: links,
-                tables: tables
             })
 
     // Page could not load

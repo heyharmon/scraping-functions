@@ -5,64 +5,21 @@
  * @return {String} Returns clean string
  */
 const clean = (string) => {
-    string = removeLineBreaks(string)
-    string = removeScripts(string)
-    string = removeStyles(string)
-    string = removeAnchors(string)
-    string = removeIFrames(string)
+    string = removeHtml(string)
     string = removeUrls(string)
+    string = removeLineBreaks(string)
 
     return string
 }
 
 /**
- * Remove all line breaks from a string
+ * Remove all html tags from a string
  *
  * @param  {String} string
- * @return {String} Returns string without line breaks
+ * @return {String} Returns string without html tags
  */
-const removeLineBreaks = (string) => {
-    return string.replace(/\s+/g, ' ')
-}
-
-/**
- * Remove all <script> tags from a string
- *
- * @param  {String} string
- * @return {String} Returns string without script tags
- */
-const removeScripts = (string) => {
-    return string.replace(/<script.*?>.*?<\/script>/igm, '')
-}
-
-/**
- * Remove all <style> tags from a string
- *
- * @param  {String} string
- * @return {String} Returns string without style tags
- */
-const removeStyles = (string) => {
-    return string.replace(/<style.*?>.*?<\/style>/igm, '')
-}
-
-/**
- * Remove all <a> tags from a string
- *
- * @param  {String} string
- * @return {String} Returns string without anchor tags
- */
-const removeAnchors = (string) => {
-    return string.replace(/<a.*?>.*?<\/a>/igm, '')
-}
-
-/**
- * Remove all <iframe> tags from a string
- *
- * @param  {String} string
- * @return {String} Returns string without iframe tags
- */
-const removeIFrames = (string) => {
-    return string.replace(/<iframe.*?>.*?<\/iframe>/igm, '')
+const removeHtml = (string) => {
+    return string.replace(/(<([^>]+)>)/gi, '')
 }
 
 /**
@@ -75,12 +32,19 @@ const removeUrls = (string) => {
     return string.replace(/(?:https?|www):\/\/[\n\S]+/g, '')
 }
 
+/**
+ * Remove all line breaks from a string
+ *
+ * @param  {String} string
+ * @return {String} Returns string without line breaks
+ */
+const removeLineBreaks = (string) => {
+    return string.replace(/\s+/g, ' ')
+}
+
 module.exports = {
     clean,
+    removeHtml,
+    removeUrls,
     removeLineBreaks,
-    removeScripts,
-    removeStyles,
-    removeAnchors,
-    removeIFrames,
-    removeUrls
 }
