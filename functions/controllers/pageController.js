@@ -1,6 +1,6 @@
 const cheerio = require('cheerio')
-const axios = require('axios')
 
+const { getHtml } = require("../helpers/http")
 const { getTitle } = require("../helpers/title")
 const { getBodyText } = require("../helpers/body")
 const { getWordCount } = require("../helpers/count")
@@ -8,36 +8,25 @@ const { getWordCount } = require("../helpers/count")
 const get = async (req, res) => {
     const url = req.query.url
     if (url) {
+        const page = await getHtml(url, res)
 
-        axios.get(url).then((html) => {
-
-            // Setup Cheerio
-            const $html = cheerio.load(html.data);
-
-            // Get page title
-            const title = getTitle($html)
-
-            // Get body
-            const body = getBodyText($html)
-
-            // Get word count
-            const words = getWordCount(body)
-
-            // Return page
-            res.status(200).json({
-                status: 200,
-                title: title,
-                words: words,
-                body: body,
-            })
-
-    // Page could not load
-    }).catch((error) => {
-        res.status(500).json({
-            status: 500,
-            message: error.code + ': ' + error.message
+        res.status(200).json({
+            status: 200,
+            data: page
         })
-    })
+
+        const $html = cheerio.load(page)
+
+        const title = getTitle($html)
+        const body = getBodyText($html)
+        const words = getWordCount(body)
+
+        res.status(200).json({
+            status: 200,
+            title: title,
+            words: words,
+            body: body,
+        })
 
     } else {
         res.status(400).json({
