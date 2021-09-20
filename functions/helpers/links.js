@@ -1,4 +1,5 @@
 const Url = require('url-parse')
+const { getElementLocation } = require("./dom")
 
 /**
  * Extract all links from html
@@ -25,6 +26,7 @@ const getStructuredLink = ($link, baseUrl) => {
     const url = new Url($link.attr('href'), baseUrl)
 
     return {
+        location: getElementLocation($link),
         text: getLinkText($link),
         type: getLinkType(url),
         url: getLinkUrl(url),
