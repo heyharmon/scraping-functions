@@ -1,4 +1,5 @@
-const express = require("express");
+const express = require("express")
+const cheerio = require('cheerio')
 const axios = require('axios')
 
 /**
@@ -9,11 +10,15 @@ const axios = require('axios')
  */
 const getHtml = async (url, res) => {
     try {
-        return { data } = await axios.get(url)
+        // Try axios
+        return await axios.get(url)
+            .then((html) => {
+                return cheerio.load(html.data)
+            })
     } catch {
         return axios.get('https://scrappy.bloomcu.com/')
             .then((html) => {
-                return html.data
+                return cheerio.load(html.data)
             })
             .catch((error) => {
                 // Page could not load
