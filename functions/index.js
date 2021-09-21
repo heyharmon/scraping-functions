@@ -7,16 +7,28 @@ const corsConfig = {
     origin: true
 }
 
-const routes = require('./routes.js')
+// Load routes
+const cheerioRoutes = require('./app-cheerio/routes.js')
+const puppeteerRoutes = require('./app-puppeteer/routes.js')
 
-// Setup Express app
-const app = express()
-      app.use(cors(corsConfig))
-      app.use('/', routes)
+// Setup Express apps
+const cheerioApp = express()
+    .use(cors(corsConfig))
+    .use('/', cheerioRoutes)
 
-// Return Express app from Firebase Function on "/api"
+const puppeteerApp = express()
+    .use(cors(corsConfig))
+    .use('/', puppeteerRoutes)
+
+// Return Cheerio app from '/api'
 exports.api = functions
-    // .runWith({memory: '1GB'}) // Use when we start running Puppeteer
     .https.onRequest((request, response) => {
-        return app(request, response)
+        return cheerioApp(request, response)
+    })
+
+// Return Puppeteer app from '/api'
+exports.browser = functions
+    .runWith({ memory: '1GB' }) // Use when we start running Puppeteer
+    .https.onRequest((request, response) => {
+        return puppeteerApp(request, response)
     })
