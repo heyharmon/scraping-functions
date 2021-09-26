@@ -4,11 +4,11 @@
  * @param  {String} string
  * @return {Number} Returns word count as number
  */
-const getWordCount = (string) => {
+const getWordcount = (string) => {
     // Match on any sequence of non-whitespace characters
     return string.match(/\S+/g).length
 }
 
 module.exports = {
-    getWordCount
+    getWordcount
 }
