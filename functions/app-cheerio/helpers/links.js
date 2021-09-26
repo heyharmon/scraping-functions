@@ -25,13 +25,16 @@ const getStructuredLink = ($link, baseUrl) => {
     // Parse URL parts
     const url = new Url($link.attr('href'), baseUrl)
 
-    return {
-        location: getElementLocation($link),
-        text: getLinkText($link),
-        type: getLinkType(url),
-        url: getLinkUrl(url),
-        domPath: getElementDomPath($link),
-        hostname: url.hostname
+    // Check type
+    if (getLinkType(url)) {
+        return {
+            location: getElementLocation($link),
+            text: getLinkText($link),
+            type: getLinkType(url),
+            url: getLinkUrl(url),
+            domPath: getElementDomPath($link),
+            hostname: url.hostname
+        }
     }
 }
 
