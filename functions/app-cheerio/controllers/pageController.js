@@ -11,13 +11,13 @@ const get = async (req, res) => {
     if (url) {
         const html = await getHtml(url, res)
 
-        const title = getTitle(html)
-        const body = getBodyText(html)
-        const wordcount = getWordcount(body)
-
         // Get links
         // TODO: Optionally pass selector for header/nav/footer for accuracy
         const links = getLinks(html, url)
+
+        const title = getTitle(html)
+        const body = getBodyText(html)
+        const wordcount = getWordcount(body)
 
         res.status(200).json({
             status: 200,
