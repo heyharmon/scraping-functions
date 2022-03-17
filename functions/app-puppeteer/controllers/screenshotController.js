@@ -17,6 +17,8 @@ const get = async (req, res) => {
 
             // Set the viewport
             await page.setViewport({ width:1680, height:1050 });
+            
+            const html = page.getHtml()
 
             // Scroll to the bottom to catch lazyload images
             await scrollPageToBottom(page)

@@ -12,7 +12,7 @@ git clone https://github.com/heyharmon/scraping-functions.git
 
 Open /functions:
 ```bash
-cd scraping-functions/function
+cd scraping-functions/functions
 ```
 
 Install dependencies:

@@ -26,7 +26,7 @@ const getStructuredLink = ($link, baseUrl) => {
     const url = new Url($link.attr('href'), baseUrl)
 
     // Check type
-    if (getLinkType(url)) {
+    if (getLinkType(url) === 'link') {
         return {
             location: getElementLocation($link),
             text: getLinkText($link),
@@ -67,6 +67,11 @@ const getLinkType = (url) => {
             return 'document'
         }
 
+        // Detect links to media
+        if (isMedia(url.pathname)) {
+            return 'media'
+        }
+
         // Detect links to social platforms
         if (isSocial(url.host)) {
             return 'social'
@@ -84,6 +89,18 @@ const getLinkType = (url) => {
     if (url.protocol == 'mailto:' ) {
         return 'email'
     }
+
+    return undefined
+}
+
+/**
+ * Get domain from url
+ *
+ * @param  {Object} url Parsed url as object
+ * @return {String} Returns domain as string
+ */
+const getLinkDomain = (url) => {
+    string.replace(/(?P<domain>[a-z0-9][a-z0-9\-]{1,63}\.[a-z\.]{2,6})$/i, ' ')
 }
 
 /**
@@ -130,6 +147,43 @@ const isDocument = (pathname) => {
         '.ods',
         '.odp',
         '.rtf',
+        '.exe',
+        '.txt'
+    ]
+
+    return extensions.some(extension => pathname.includes(extension))
+}
+
+/**
+ * Check if URL points to media
+ *
+ * @param  {String} host Pathname of URL, e.g., '/uploads/image.jpg'
+ * @return {Boolean} Returns true or false
+ */
+const isMedia = (pathname) => {
+    pathname = pathname.toLowerCase()
+
+    const extensions = [
+        '.avi',
+        '.gif',
+        '.jpg',
+        '.jpeg',
+        '.png',
+        '.svg',
+        '.webp',
+        '.tif',
+        '.tiff',
+        '.mid',
+        '.midi',
+        '.mp3',
+        '.mp4',
+        '.mpg',
+        '.mpeg',
+        '.mov',
+        '.qt',
+        '.ram',
+        '.rar',
+        '.wav'
     ]
 
     return extensions.some(extension => pathname.includes(extension))

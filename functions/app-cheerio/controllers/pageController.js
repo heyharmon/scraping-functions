@@ -12,7 +12,7 @@ const get = async (req, res) => {
         const html = await getHtml(url, res)
 
         // Get links
-        // TODO: Optionally pass selector for header/nav/footer for accuracy
+        // TODO: Optionally pass css selectors for header, navbar, footer for better accuracy
         const links = getLinks(html, url)
 
         const title = getTitle(html)

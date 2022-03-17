@@ -20,15 +20,15 @@ const puppeteerApp = express()
     .use(cors(corsConfig))
     .use('/', puppeteerRoutes)
 
-// Return Cheerio app from '/api'
-exports.api = functions
+// Return Cheerio app from '[host]/api/cheerio'
+exports.cheerio = functions
     .https.onRequest((request, response) => {
         return cheerioApp(request, response)
     })
 
-// Return Puppeteer app from '/api'
-exports.browser = functions
-    .runWith({ memory: '1GB' }) // Use when we start running Puppeteer
+// Return Puppeteer app from '[host]/api/puppeteer'
+exports.puppeteer = functions
+    .runWith({ memory: '1GB' }) // Give Puppeteer more resources
     .https.onRequest((request, response) => {
         return puppeteerApp(request, response)
     })
