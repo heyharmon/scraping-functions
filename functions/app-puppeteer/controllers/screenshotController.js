@@ -16,9 +16,7 @@ const get = async (req, res) => {
             await page.goto(url, { waitUntil: 'load' })
 
             // Set the viewport
-            await page.setViewport({ width:1680, height:1050 });
-            
-            const html = page.getHtml()
+            await page.setViewport({ width: 1400, height: 900 });
 
             // Scroll to the bottom to catch lazyload images
             await scrollPageToBottom(page)
@@ -43,17 +41,10 @@ const get = async (req, res) => {
             res.status(200).send(screenshot)
 
         } catch (error) {
-            if (error.response.status == 404) {
-                res.status(404).json({
-                    status: 404,
-                    message: 'Url cannot be loaded'
-                })
-            } else {
-                res.status(500).json({
-                    status: 500,
-                    message: 'The server encountered an unexpected error'
-                })
-            }
+          res.status(500).json({
+              status: 500,
+              message: 'The server encountered an unexpected error'
+          })
         }
 
     } else {
