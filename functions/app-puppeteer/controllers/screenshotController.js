@@ -1,12 +1,20 @@
-const puppeteer = require('puppeteer'),
-      scrollPageToBottom = require('puppeteer-autoscroll-down')
+require('dotenv').config();
 
-const { config } = require('../config.js')
+const puppeteer = require('puppeteer'),
+      scrollPageToBottom = require('puppeteer-autoscroll-down'),
+      { config } = require('../config.js'),
+      AWS = require('aws-sdk');
+
+const s3 = new AWS.S3({
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  region: process.env.AWS_REGION
+});
 
 const get = async (req, res) => {
-    const url = req.query.url
-    if (url) {
-
+    if (req.query.url) {
+        const url = new URL(req.query.url)
+        
         try {
             // Setup browser
             const browser = await puppeteer.launch(config)
@@ -35,10 +43,28 @@ const get = async (req, res) => {
 
             // Close the browser
             await browser.close()
-
-            // Return screenshot
-            res.setHeader('Content-Type', 'image/png')
-            res.status(200).send(screenshot)
+            
+            // Upload screenshot
+            s3.upload({
+              Bucket: 'firebase-screenshot-function',
+              Body: screenshot,
+              Key: url.hostname + '-' + Math.random().toString(36).slice(2, 7) + '.jpeg'
+            })
+            .promise()
+            .then(response => {
+              res.status(200).json({
+                message: response
+              })
+            })
+            .catch(error => {
+              res.status(500).json({
+                message: error
+              })
+            })
+            
+            // Return
+            // res.setHeader('Content-Type', 'image/png')
+            // res.status(200).send(screenshot)
 
         } catch (error) {
           res.status(500).json({
