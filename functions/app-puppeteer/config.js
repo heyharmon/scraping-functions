@@ -1,6 +1,6 @@
 // Default config for Puppeteer browser
 const config =  {
-    headless: true,
+    headless: 'true',
     ignoreHTTPSErrors: true,
     args: [
       '--autoplay-policy=user-gesture-required',

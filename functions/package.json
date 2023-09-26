@@ -1,6 +1,6 @@
 {
-  "name": "functions",
-  "description": "Cloud Functions for Firebase",
+  "name": "fusion-block-screenshot-function",
+  "description": "Cloud Function on Firebase",
   "scripts": {
     "serve": "firebase emulators:start --only functions",
     "shell": "firebase functions:shell",
@@ -9,20 +9,20 @@
     "logs": "firebase functions:log"
   },
   "engines": {
-    "node": "14"
+    "node": "20"
   },
   "main": "index.js",
   "dependencies": {
-    "aws-sdk": "^2.1120.0",
+    "aws-sdk": "^2.1463.0",
     "axios": "^0.21.4",
     "cheerio": "^1.0.0-rc.10",
     "cors": "^2.8.5",
     "dotenv": "^16.0.0",
     "express": "^4.17.1",
-    "firebase-admin": "^9.8.0",
-    "firebase-functions": "^3.14.1",
+    "firebase-admin": "^11.10.1",
+    "firebase-functions": "^4.4.1",
     "lodash": "^4.17.21",
-    "puppeteer": "^10.2.0",
+    "puppeteer": "^21.3.4",
     "puppeteer-autoscroll-down": "^0.1.7",
     "url-parse": "^1.5.3"
   },

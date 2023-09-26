@@ -1,83 +1,27 @@
-require('dotenv').config();
-
-const puppeteer = require('puppeteer'),
-      scrollPageToBottom = require('puppeteer-autoscroll-down'),
-      { config } = require('../config.js'),
-      AWS = require('aws-sdk');
-
-const s3 = new AWS.S3({
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-  region: process.env.AWS_REGION
-});
+const { takeScreenshot } = require('../actions/takeScreenshot.js')
+const { uploadFile } = require('../actions/uploadFile.js')
 
 const get = async (req, res) => {
-    if (req.query.url) {
-        const url = new URL(req.query.url)
-        
-        try {
-            // Setup browser
-            const browser = await puppeteer.launch(config)
+  if (!req.query.url) {
+    res.status(400).json({ message: 'Missing parameter: url.' })
+  }
 
-            // Load page
-            const page = await browser.newPage()
-            await page.goto(url, { waitUntil: 'load' })
+  const url = new URL(req.query.url)
+      
+  try {
+    let screenshot = await takeScreenshot(url, 'desktop')
 
-            // Set the viewport
-            await page.setViewport({ width: 1400, height: 900 });
+    uploadFile(screenshot)
+      .then(response => {
+        res.status(200).json({ message: response })
+      })
+      .catch(error => {
+        res.status(500).json({ message: 'There was a problem uploading to S3: ' + error })
+      })
 
-            // Scroll to the bottom to catch lazyload images
-            await scrollPageToBottom(page)
-
-            // Scroll to the very top of the page
-            await page.evaluate(_ => {
-              window.scrollTo(0, 0)
-            })
-
-            // Take screenshot
-            const screenshot = await page.screenshot({
-                fullPage: true,
-                type: 'jpeg',
-                quality: 85
-            })
-
-            // Close the browser
-            await browser.close()
-            
-            // Upload screenshot
-            s3.upload({
-              Bucket: 'firebase-screenshot-function',
-              Body: screenshot,
-              Key: url.hostname + '-' + Math.random().toString(36).slice(2, 7) + '.jpeg'
-            })
-            .promise()
-            .then(response => {
-              res.status(200).json({
-                message: response
-              })
-            })
-            .catch(error => {
-              res.status(500).json({
-                message: error
-              })
-            })
-            
-            // Return
-            // res.setHeader('Content-Type', 'image/png')
-            // res.status(200).send(screenshot)
-
-        } catch (error) {
-          res.status(500).json({
-              status: 500,
-              message: 'The server encountered an unexpected error'
-          })
-        }
-
-    } else {
-        res.status(400).json({
-            message: 'Missing url parameter.'
-        })
-    }
+  } catch (error) {
+    res.status(500).json({ message: 'Application error: ' + error })
+  }
 };
 
 module.exports = {
