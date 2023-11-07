@@ -1,17 +1,17 @@
 
-# Fusion Block Screenshot Function
-Take screenshots of Fusion Blocks in Avada Theme using Puppeteer.
+# Firebase Functions
+Crawl website and take screenshots using Cheerio and Puppeteer.
 
 ## Quick Start
 
 Clone repo:
 ```bash
-git clone https://github.com/heyharmon/fusion-block-screenshot-function.git
+git clone https://github.com/heyharmon/firebase-functions.git
 ```
 
 Open /functions:
 ```bash
-cd fusion-block-screenshot-function/functions
+cd firebase-functions/functions
 ```
 
 Install dependencies:
@@ -56,10 +56,10 @@ Using S3? [Here's how to setup permissions](https://medium.com/p/fcd239c8e6e4)
 
 ## API
 
-Local base URL: `http://localhost:5000/fusion-block-screenshot-function/us-central1`
+Local base URL: `http://localhost:5000/firebase-functions/us-central1`
 
 ### Screenshots
 
 | Method | Path | Params | Function ||
 |--|--|--|--|--|
-| GET | /screenshot | url | Get a fullpage screenshot | [Open](http://localhost:5000/fusion-block-screenshot-function/us-central1/screenshot?url=https://bloomcu.com) |
+| GET | /screenshot | url | Get a fullpage screenshot | [Open](http://localhost:5000/firebase-functions/us-central1/screenshot?url=https://bloomcu.com) |

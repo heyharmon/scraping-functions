@@ -10,12 +10,11 @@ const get = async (req, res) => {
     const url = req.query.url
     if (url) {
         const html = await getHtml(url, res)
-
-        // Get links
         // TODO: Optionally pass css selectors for header, navbar, footer for better accuracy
-        const links = getLinks(html, url)
+        // https://stackoverflow.com/questions/44690023/cheerio-how-to-ignore-elements-of-a-certain-tag
 
         const title = getTitle(html)
+        const links = getLinks(html, url)
         const body = getBodyText(html)
         const wordcount = getWordcount(body)
 
@@ -23,7 +22,7 @@ const get = async (req, res) => {
             status: 200,
             title: title,
             wordcount: wordcount,
-            body: body,
+            // body: body,
             links: links
         })
 

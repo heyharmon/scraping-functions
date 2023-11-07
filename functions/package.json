@@ -1,6 +1,6 @@
 {
-  "name": "fusion-block-screenshot-function",
-  "description": "Cloud Function on Firebase",
+  "name": "firebase-functions",
+  "description": "Cloud Functions on Firebase",
   "scripts": {
     "serve": "firebase emulators:start --only functions",
     "shell": "firebase functions:shell",
